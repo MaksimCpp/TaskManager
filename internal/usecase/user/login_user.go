@@ -5,12 +5,25 @@ import (
 	"errors"
 
 	"github.com/MaksimCpp/TaskManager/internal/domain"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginUserInput struct {
 	Email string
 	Password string
+}
+
+type LoginUserOutput struct {
+	ID uuid.UUID `json:"id"`
+	Email string `json:"email"`
+}
+
+func NewLoginUserOutput(id uuid.UUID, email string) *LoginUserOutput {
+	return &LoginUserOutput{
+		ID: id,
+		Email: email,
+	}
 }
 
 type LoginUserUseCase interface {

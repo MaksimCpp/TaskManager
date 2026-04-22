@@ -46,15 +46,12 @@ func (handler *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := handler.loginUseCase.Execute(r.Context(), request)
+	userEntity, err := handler.loginUseCase.Execute(r.Context(), request)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	response := map[string]interface{}{
-		"id": user.ID,
-		"email": user.Email,
-	}
+	response := user.NewLoginUserOutput(userEntity.ID, userEntity.Email)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }

@@ -8,29 +8,29 @@ import (
 )
 
 type UserHandler struct {
-	createUseCase user.CreateUserUseCase
+	registerUseCase user.RegisterUserUseCase
 	loginUseCase user.LoginUserUseCase
 }
 
 func NewUserHandler(
-	createUseCase user.CreateUserUseCase, 
+	registerUseCase user.RegisterUserUseCase, 
 	loginUseCase user.LoginUserUseCase,
 ) *UserHandler {
 	return &UserHandler{
-		createUseCase: createUseCase,
+		registerUseCase: registerUseCase,
 		loginUseCase: loginUseCase,
 	}
 }
 
-func (handler *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
-	var request user.CreateUserInput
+func (handler *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
+	var request user.RegisterUserInput
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		http.Error(w, "Invalid request.", http.StatusBadRequest)
 		return
 	}
 
-	err = handler.createUseCase.Execute(r.Context(), request)
+	err = handler.registerUseCase.Execute(r.Context(), request)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

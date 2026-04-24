@@ -9,7 +9,7 @@ import (
 func NewRouter(userHandler *handler.UserHandler) http.Handler {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("POST /users", userHandler.Create)
+	mux.HandleFunc("POST /users", userHandler.Register)
 	mux.HandleFunc("POST /users/login", userHandler.Login)
 
 	return mux

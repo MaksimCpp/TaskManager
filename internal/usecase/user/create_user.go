@@ -8,29 +8,29 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type CreateUserInput struct {
+type RegisterUserInput struct {
 	Email string
 	Password string
 }
 
-type CreateUserUseCase interface {
-	Execute(ctx context.Context, input CreateUserInput) error
+type RegisterUserUseCase interface {
+	Execute(ctx context.Context, input RegisterUserInput) error
 }
 
-type PostgreSQLCreateUserUseCase struct {
+type PostgreSQLRegisterUserUseCase struct {
 	repo domain.UserRepository
 }
 
-func NewPostgreSQLCreateUserUseCase(
+func NewPostgreSQLRegisterUserUseCase(
 	repository domain.UserRepository,
-) *PostgreSQLCreateUserUseCase {
-	return &PostgreSQLCreateUserUseCase{
+) *PostgreSQLRegisterUserUseCase {
+	return &PostgreSQLRegisterUserUseCase{
 		repo: repository,
 	}
 }
 
-func (usecase *PostgreSQLCreateUserUseCase) Execute(
-	ctx context.Context, input CreateUserInput,
+func (usecase *PostgreSQLRegisterUserUseCase) Execute(
+	ctx context.Context, input RegisterUserInput,
 ) error {
 	id := uuid.New()
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)

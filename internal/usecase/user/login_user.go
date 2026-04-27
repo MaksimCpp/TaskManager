@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/MaksimCpp/TaskManager/internal/domain"
-	"github.com/google/uuid"
+	jwt_service "github.com/MaksimCpp/TaskManager/internal/service/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,36 +15,31 @@ type LoginUserInput struct {
 }
 
 type LoginUserOutput struct {
-	ID uuid.UUID `json:"id"`
-	Email string `json:"email"`
-}
-
-func NewLoginUserOutput(id uuid.UUID, email string) *LoginUserOutput {
-	return &LoginUserOutput{
-		ID: id,
-		Email: email,
-	}
+	Token string
 }
 
 type LoginUserUseCase interface {
-	Execute(ctx context.Context, input LoginUserInput) (*domain.User, error)
+	Execute(ctx context.Context, input LoginUserInput) (*LoginUserOutput, error)
 }
 
 type PostgreSQLLoginUserUseCase struct {
 	repo domain.UserRepository
+	jwt jwt_service.JWTService
 }
 
 func NewPostgreSQLLoginUserUseCase(
 	repository domain.UserRepository,
+	jwt jwt_service.JWTService,
 ) *PostgreSQLLoginUserUseCase {
 	return &PostgreSQLLoginUserUseCase{
 		repo: repository,
+		jwt: jwt,
 	}
 }
 
 func (usecase *PostgreSQLLoginUserUseCase) Execute(
 	ctx context.Context, input LoginUserInput,
-) (*domain.User, error) {
+) (*LoginUserOutput, error) {
 	user, err := usecase.repo.GetByEmail(ctx, input.Email)
 	if err != nil {
 		return nil, err
@@ -57,5 +52,13 @@ func (usecase *PostgreSQLLoginUserUseCase) Execute(
 	if err != nil {
 		return nil, errors.New("Invalid password.")
 	}
-	return user, nil
+
+	token, err := usecase.jwt.GenerateToken(user.ID.String())
+	if err != nil {
+		return nil, errors.New("Invalid password.")
+	}
+
+	return &LoginUserOutput{
+		Token: token,
+	}, nil
 }

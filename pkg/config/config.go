@@ -9,11 +9,13 @@ import (
 
 type Config struct {
 	DBUrl string
+	Secret string
 }
 
 func New() *Config {
 	_ = godotenv.Load()
 
+	secret := os.Getenv("SECRET")
 	user := os.Getenv("POSTGRES_USER")
 	password := os.Getenv("POSTGRES_PASSWORD")
 	host := os.Getenv("POSTGRES_HOST")
@@ -30,5 +32,6 @@ func New() *Config {
 
 	return &Config{
 		DBUrl: dbUrl,
+		Secret: secret,
 	}
 }

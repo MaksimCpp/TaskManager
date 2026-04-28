@@ -8,7 +8,7 @@ import (
 	"github.com/MaksimCpp/TaskManager/internal/delivery/http/handler"
 	"github.com/MaksimCpp/TaskManager/internal/infrastructure/postgres"
 	"github.com/MaksimCpp/TaskManager/internal/repository"
-	jwt_service "github.com/MaksimCpp/TaskManager/internal/service/jwt"
+	jwtservice "github.com/MaksimCpp/TaskManager/internal/service/jwt"
 	"github.com/MaksimCpp/TaskManager/internal/usecase/user"
 	"github.com/MaksimCpp/TaskManager/pkg/config"
 )
@@ -20,7 +20,7 @@ func main() {
 		fmt.Println(err.Error())
 	}
 	defer db.Close()
-	jwtService := jwt_service.NewJWTService(
+	jwtService := jwtservice.NewJWTService(
 		cfg.Secret,
 	)
 	userRepository := repository.NewPostgreSQLUserRepository(db)

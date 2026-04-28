@@ -1,4 +1,4 @@
-package http_delivery
+package httpdelivery
 
 import (
 	"net/http"

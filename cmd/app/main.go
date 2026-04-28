@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	http_delivery "github.com/MaksimCpp/TaskManager/internal/delivery/http"
+	httpdelivery "github.com/MaksimCpp/TaskManager/internal/delivery/http"
 	"github.com/MaksimCpp/TaskManager/internal/delivery/http/handler"
 	"github.com/MaksimCpp/TaskManager/internal/infrastructure/postgres"
 	"github.com/MaksimCpp/TaskManager/internal/repository"
@@ -27,7 +27,7 @@ func main() {
 	createUserUseCase := user.NewPostgreSQLRegisterUserUseCase(userRepository)
 	loginUserUseCase := user.NewPostgreSQLLoginUserUseCase(userRepository, *jwtService)
 	userHandler := handler.NewUserHandler(createUserUseCase, loginUserUseCase)
-	router := http_delivery.NewRouter(userHandler)
+	router := httpdelivery.NewRouter(userHandler)
 	err = http.ListenAndServe(":8000", router)
 	if err != nil {
 		fmt.Println(err.Error())

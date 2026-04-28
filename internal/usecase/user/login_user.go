@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/MaksimCpp/TaskManager/internal/domain"
-	jwt_service "github.com/MaksimCpp/TaskManager/internal/service/jwt"
+	jwtservice "github.com/MaksimCpp/TaskManager/internal/service/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -24,12 +24,12 @@ type LoginUserUseCase interface {
 
 type PostgreSQLLoginUserUseCase struct {
 	repo domain.UserRepository
-	jwt jwt_service.JWTService
+	jwt jwtservice.JWTService
 }
 
 func NewPostgreSQLLoginUserUseCase(
 	repository domain.UserRepository,
-	jwt jwt_service.JWTService,
+	jwt jwtservice.JWTService,
 ) *PostgreSQLLoginUserUseCase {
 	return &PostgreSQLLoginUserUseCase{
 		repo: repository,

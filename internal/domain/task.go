@@ -1,17 +1,26 @@
 package domain
 
-import (
-	"time"
-
-	"github.com/google/uuid"
-)
 
 type Task struct {
-	ID uuid.UUID
+	ID string
 	Title string
 	Description string
 	Completed bool
-    UserID uuid.UUID
-    CreatedAt time.Time
-    UpdatedAt time.Time
+    UserID string
+}
+
+func NewTask(
+	id string,
+	title string,
+	description string,
+	completed bool,
+    userID string,
+) *Task {
+	return &Task{
+		ID: id,
+		Title: title,
+		Description: description,
+		Completed: completed,
+		UserID: userID,
+	}
 }

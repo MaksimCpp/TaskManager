@@ -9,6 +9,7 @@ import (
 	"github.com/MaksimCpp/TaskManager/internal/infrastructure/postgres"
 	"github.com/MaksimCpp/TaskManager/internal/repository"
 	jwtservice "github.com/MaksimCpp/TaskManager/internal/service/jwt"
+	"github.com/MaksimCpp/TaskManager/internal/usecase/task"
 	"github.com/MaksimCpp/TaskManager/internal/usecase/user"
 	"github.com/MaksimCpp/TaskManager/pkg/config"
 )
@@ -27,7 +28,14 @@ func main() {
 	createUserUseCase := user.NewPostgreSQLRegisterUserUseCase(userRepository)
 	loginUserUseCase := user.NewPostgreSQLLoginUserUseCase(userRepository, *jwtService)
 	userHandler := handler.NewUserHandler(createUserUseCase, loginUserUseCase)
-	router := httpdelivery.NewRouter(userHandler)
+
+	taskRepository := repository.NewPostgreSQLTaskRepository(db)
+	createTaskUseCase := task.NewPostgreSQLCreateTaskUseCase(taskRepository)
+	deleteTaskUseCase := task.NewPostgreSQLDeleteTaskUseCase(taskRepository)
+	getTasksUseCase := task.NewPostgreSQLGetTasksUseCase(taskRepository)
+	taskHandler := handler.NewTaskHandler(createTaskUseCase, deleteTaskUseCase, getTasksUseCase)
+
+	router := httpdelivery.NewRouter(userHandler, taskHandler, jwtService)
 	err = http.ListenAndServe(":8000", router)
 	if err != nil {
 		fmt.Println(err.Error())

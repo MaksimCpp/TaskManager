@@ -22,7 +22,7 @@ func NewUserHandler(
 	}
 }
 
-func (handler *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var request user.RegisterUserInput
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
@@ -30,15 +30,15 @@ func (handler *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = handler.registerUseCase.Execute(r.Context(), request)
+	err = h.registerUseCase.Execute(r.Context(), request)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Internal server error.", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (handler *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var request user.LoginUserInput
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
@@ -46,9 +46,9 @@ func (handler *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := handler.loginUseCase.Execute(r.Context(), request)
+	result, err := h.loginUseCase.Execute(r.Context(), request)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Internal server error.", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

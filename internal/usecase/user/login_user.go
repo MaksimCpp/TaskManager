@@ -53,7 +53,7 @@ func (usecase *PostgreSQLLoginUserUseCase) Execute(
 		return nil, errors.New("Invalid password.")
 	}
 
-	token, err := usecase.jwt.GenerateToken(user.ID.String())
+	token, err := usecase.jwt.GenerateToken(user.ID)
 	if err != nil {
 		return nil, errors.New("Invalid password.")
 	}

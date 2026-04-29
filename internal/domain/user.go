@@ -1,21 +1,20 @@
 package domain
 
-import "github.com/google/uuid"
 
 type User struct {
-	ID uuid.UUID
+	ID string
 	Email string
 	Password string
 }
 
 func NewUser(
-	id uuid.UUID,
+	id string,
 	email string,
 	password string,
-) (*User, error) {
+) *User {
 	return &User{
 		ID: id,
 		Email: email, 
 		Password: password,
-	}, nil
+	}
 }

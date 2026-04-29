@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/MaksimCpp/TaskManager/internal/domain"
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -60,7 +59,7 @@ func (repo *PostgreSQLUserRepository) GetByEmail(
 }
 
 func (repo *PostgreSQLUserRepository) GetByID(
-	ctx context.Context, id uuid.UUID,
+	ctx context.Context, id string,
 ) (*domain.User, error) {
 	query := `
 		SELECT id, email, password

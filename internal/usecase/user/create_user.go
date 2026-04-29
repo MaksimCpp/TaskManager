@@ -32,17 +32,13 @@ func NewPostgreSQLRegisterUserUseCase(
 func (usecase *PostgreSQLRegisterUserUseCase) Execute(
 	ctx context.Context, input RegisterUserInput,
 ) error {
-	id := uuid.New()
+	id := uuid.New().String()
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
-	userInput, err := domain.NewUser(id, input.Email, string(hashPassword))
-	if err != nil {
-		return err
-	}
-
+	userInput := domain.NewUser(id, input.Email, string(hashPassword))
 	err = usecase.repo.Create(ctx, userInput)
 	return err
 }

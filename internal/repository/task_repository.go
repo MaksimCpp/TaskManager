@@ -110,7 +110,7 @@ func (repo *PostgreSQLTaskRepository) Update(
 		return err
 	}
 	if result.RowsAffected() == 0 {
-        return errors.New("ничего не обновилось")
+        return errors.New("Task or user not found")
     }
 	return nil
 }

@@ -33,7 +33,10 @@ func main() {
 	createTaskUseCase := task.NewPostgreSQLCreateTaskUseCase(taskRepository)
 	deleteTaskUseCase := task.NewPostgreSQLDeleteTaskUseCase(taskRepository)
 	getTasksUseCase := task.NewPostgreSQLGetTasksUseCase(taskRepository)
-	taskHandler := handler.NewTaskHandler(createTaskUseCase, deleteTaskUseCase, getTasksUseCase)
+	updateTasksUseCase := task.NewPostgreSQLUpdateTaskUseCase(taskRepository)
+	taskHandler := handler.NewTaskHandler(
+		createTaskUseCase, deleteTaskUseCase, getTasksUseCase, updateTasksUseCase,
+	)
 
 	router := httpdelivery.NewRouter(userHandler, taskHandler, jwtService)
 	err = http.ListenAndServe(":8000", router)

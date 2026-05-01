@@ -22,6 +22,7 @@ func NewRouter(
 	mux.Handle("POST /tasks", auth(http.HandlerFunc(taskHandler.Create)))
 	mux.Handle("GET /tasks", auth(http.HandlerFunc(taskHandler.Get)))
 	mux.Handle("DELETE /tasks", auth(http.HandlerFunc(taskHandler.Delete)))
+	mux.Handle("PATCH /tasks", auth(http.HandlerFunc(taskHandler.Update)))
 
 	return mux
 }

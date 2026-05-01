@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/MaksimCpp/TaskManager/internal/domain"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -78,7 +79,7 @@ func (repo *PostgreSQLTaskRepository) Delete(
 ) error {
 	query := `
 		DELETE FROM taskschema.tasks
-		WHERE task_id = $1 AND user_id = $2;
+		WHERE id = $1 AND user_id = $2;
 	`
 	_, err := repo.db.Exec(
 		ctx,
@@ -87,4 +88,29 @@ func (repo *PostgreSQLTaskRepository) Delete(
 		userID,
 	)
 	return err
+}
+
+func (repo *PostgreSQLTaskRepository) Update(
+	ctx context.Context, taskID string, userID string, completed bool,
+) error {
+	query := `
+		UPDATE taskschema.tasks
+		SET completed = $1, updated_at = NOW()
+		WHERE id = $2 AND user_id = $3;
+	`
+	result, err := repo.db.Exec(
+		ctx,
+		query,
+		completed,
+		taskID,
+		userID,
+	)
+
+	if err != nil {
+		return err
+	}
+	if result.RowsAffected() == 0 {
+        return errors.New("ничего не обновилось")
+    }
+	return nil
 }

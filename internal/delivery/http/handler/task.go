@@ -12,17 +12,20 @@ type TaskHandler struct {
 	createTaskUseCase task.CreateTaskUseCase
 	deleteTaskUseCase task.DeleteTaskUseCase
 	getTasksUseCase task.GetTasksUseCase
+	updateTaskUseCase task.UpdateTaskUseCase
 }
 
 func NewTaskHandler(
 	createTaskUseCase task.CreateTaskUseCase,
 	deleteTaskUseCase task.DeleteTaskUseCase,
 	getTasksUseCase task.GetTasksUseCase,
+	updateTaskUseCase task.UpdateTaskUseCase,
 ) *TaskHandler {
 	return &TaskHandler{
 		createTaskUseCase: createTaskUseCase,
 		deleteTaskUseCase: deleteTaskUseCase,
 		getTasksUseCase: getTasksUseCase,
+		updateTaskUseCase: updateTaskUseCase,
 	}
 }
 
@@ -99,4 +102,28 @@ func (h *TaskHandler) Get(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(tasks)
+}
+
+func (h *TaskHandler) Update(w http.ResponseWriter, r *http.Request) {
+	userID, ok := r.Context().Value(middleware.UserIDKey).(string)
+	if !ok {
+		http.Error(w, "Unauthorized.", http.StatusUnauthorized)
+		return
+	}
+	queryParams := r.URL.Query()
+	taskID := queryParams.Get("id")
+
+	var request struct {
+		Сompleted bool `json:"completed"`
+	}
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		http.Error(w, "Invalid request.", http.StatusBadRequest)
+		return
+	}
+	err = h.updateTaskUseCase.Execute(r.Context(), taskID, userID, request.Сompleted)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.WriteHeader(http.StatusAccepted)
 }
